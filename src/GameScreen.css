@@ -1,0 +1,52 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+.ground {
+  height: 30vh;
+  width: 100%;
+  background-color: bisque;
+}
+.entities {
+  height: 40vh;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-style: solid 1px;
+}
+.sliding-background {
+  background: url('https://stmed.net/sites/default/files/jojo%27s-bizarre-adventure-wallpapers-25916-9961975.jpg')
+    repeat-x;
+  height: 500px;
+  width: 5760px; /* The image width times 3 */
+  animation: slide 10s linear infinite;
+}
+.countdown {
+  font-family: 'RD_CHULAJARUEK';
+  position: absolute;
+  z-index: 10;
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 270px;
+  font-weight: 600;
+}
+@keyframes slide {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-1920px, 0, 0); /* The image width */
+  }
+}

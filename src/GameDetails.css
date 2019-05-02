@@ -1,0 +1,60 @@
+.container {
+  font-family: 'RD_CHULAJARUEK';
+  width: 100%;
+  height: 30vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sentences-display {
+  font-size: 40px;
+  margin-top: 100px;
+  width: 700px;
+  height: 300px;
+  /* border: solid 1px; */
+}
+.timer {
+  width: 100%;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.timer > .timer-bar {
+  width: 100%;
+  height: 5px;
+  background-color: brown;
+}
+.timer-bar-running {
+  animation: timer-bar;
+}
+.timer > .center-bar {
+  position: absolute;
+  width: 5px;
+  height: 12px;
+  background-color: white;
+}
+
+.hit-point {
+  width: 200px;
+  margin-left: 25px;
+  margin-top: 20px;
+  font-size: 24px;
+}
+.heart {
+  width: 20px;
+  margin-right: 5px;
+}
+.score {
+  width: 200px;
+  margin-top: 20px;
+  font-size: 24px;
+}
+@keyframes timer-bar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}

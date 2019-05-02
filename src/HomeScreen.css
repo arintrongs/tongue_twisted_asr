@@ -1,0 +1,30 @@
+.home-container {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.logo {
+  width: 500px;
+  height: 300px;
+  border: solid 1px;
+  margin-bottom: 100px;
+}
+.start {
+  font-size: 36px;
+  animation: blinker 0.5s;
+  /* animation-timing-function: ease-in-out; */
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
+@keyframes blinker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

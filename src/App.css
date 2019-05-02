@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'RD_CHULAJARUEK';
+  src: url('./assets/fonts/RD_CHULAJARUEK.ttf');
+}
 .App {
   text-align: center;
 }
