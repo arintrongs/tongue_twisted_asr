@@ -1,14 +1,27 @@
 .screen {
+  /* display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center; */
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  /* overflow-x: hidden; */
+}
+.top-screen {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  height: 100%;
-  min-height: 100vh;
+  background-image: url('../src/assets/img/mario-bg-top.jpg');
+  background-size: 100% auto;
+  background-position-y: bottom;
+  height: 70vh;
   width: 100%;
   overflow-x: hidden;
 }
 .ground {
+  background-image: url('../src/assets/img/mario-bg-bottom.jpg');
   height: 30vh;
   width: 100%;
   background-color: bisque;
