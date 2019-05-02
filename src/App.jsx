@@ -6,7 +6,8 @@ import CharacterSelectCard from './CharacterSelectCard'
 
 class App extends React.Component {
   state = {
-    isStart: false
+    isStart: false,
+    isSelected: false
   }
   startGame = () => {
     this.setState({ isStart: true })
@@ -14,15 +15,19 @@ class App extends React.Component {
   stopGame = () => {
     this.setState({ isStart: false })
   }
+  selectChar = () => {
+    this.setState({ isSelected: true })
+  }
   render() {
     return (
       <div className="App">
-        {this.state.isStart ? (
-          <GameScreen isStart={this.state.isStart} stopGame={this.stopGame} />
-        ) : (
+        {!this.state.isStart ? (
           <HomeScreen startGame={this.startGame} />
+        ) : !this.state.isSelected ? (
+          <CharacterSelectCard selectChar={this.selectChar} />
+        ) : (
+          <GameScreen isStart={this.state.isStart} stopGame={this.stopGame} />
         )}
-        {/* <CharacterSelectCard /> */}
       </div>
     )
   }

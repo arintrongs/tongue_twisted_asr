@@ -1,7 +1,6 @@
-import React, { ReactDOM } from 'react'
+import React from 'react'
 import './HomeScreen.css'
 import logo from './assets/img/logo.png'
-import CharacterSelectCard from './CharacterSelectCard'
 
 class HomeScreen extends React.Component {
   constructor(props) {
