@@ -1,16 +1,31 @@
 .home-container {
-  width: 100%;
+  width: 3312px;
   min-height: 100vh;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: url('./assets/img/background2.png');
+  background-repeat: repeat-x;
+  /* background-size: 100%; */
+  animation: moveX 10s linear infinite;
+  /* animation-iteration-count: infinite; */
 }
+
+@keyframes moveX {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-4416px, 0, 0); /* The image width */
+  }
+}
+
 .logo {
-  width: 500px;
-  height: 300px;
-  border: solid 1px;
+  width: 400px;
+  height: 400px;
+  /* border: solid 1px; */
   margin-bottom: 100px;
 }
 .start {
