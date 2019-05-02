@@ -1,0 +1,14 @@
+.char-pic {
+  size: 20%;
+}
+
+.char-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-container {
+  padding: 20px 20px 20px 20px;
+  background-color: bisque;
+}
