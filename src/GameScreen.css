@@ -1,20 +1,33 @@
 .screen {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   height: 100%;
   min-height: 100vh;
   width: 100%;
+  /* overflow-x: hidden; */
+}
+.top-screen {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-end; */
+  align-items: center;
+  background-image: url('../src/assets/img/mario-bg-top.jpg');
+  background-size: 100% auto;
+  background-position-y: bottom;
+  width: 100%;
+  height: 70vh;
   overflow-x: hidden;
 }
 .ground {
+  background-image: url('../src/assets/img/mario-bg-bottom.jpg');
   height: 30vh;
   width: 100%;
   background-color: bisque;
 }
 .entities {
-  height: 40vh;
+  height: 0;
   width: 80%;
   display: flex;
   justify-content: space-between;

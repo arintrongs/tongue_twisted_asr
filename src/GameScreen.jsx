@@ -8,25 +8,31 @@ import _ from 'lodash'
 import FinishedScreen from './FinishedScreen'
 
 import { dict } from './dict'
+
 const initialState = {
   utterance: [],
   current_utt: 0,
   hitpoint: 5,
   score: 0,
-  time: 5,
+  time: 8,
   lastTimeStamp: new Date(),
   countdown: 3,
   isTimerBarRunning: false,
   secDiff: 0,
   refreshed: false,
   correct: 0,
-  isFinished: false
+  isFinished: false,
+  isCorrect: false,
+  isWrong: false,
+  dict: []
 }
 var w3c = websocket.w3cwebsocket
 class GameScreen extends React.Component {
   state = initialState
 
   async componentDidMount() {
+    const new_dict = this.shuffle(dict)
+    this.setState({ dict: new_dict })
     const interval = setInterval(async () => {
       if (this.state.countdown === 1) {
         clearInterval(interval)
@@ -39,7 +45,12 @@ class GameScreen extends React.Component {
     const timerChecker = setInterval(async () => {
       const timeDiff = Date.now() - this.state.lastTimeStamp.getTime()
       const secDiff = timeDiff / 1000
+
       if (secDiff > this.state.time) {
+        if (this.state.current_utt === this.state.dict.length - 2) {
+          const new_dict = this.shuffle(dict)
+          this.setState({ dict: new_dict, current_utt: 0 })
+        }
         if (this.state.hitpoint === 1) {
           const score = this.state.score
           this.setState(initialState)
@@ -50,11 +61,22 @@ class GameScreen extends React.Component {
         this.setState({
           hitpoint: this.state.hitpoint - 1,
           lastTimeStamp: new Date(),
-          current_utt: this.state.current_utt + 1
+          current_utt: this.state.current_utt + 1,
+          isWrong: true
         })
+        setTimeout(() => {
+          this.setState({ isWrong: false })
+        }, 500)
       }
       this.setState({ secDiff })
     }, 50)
+  }
+  shuffle = a => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[a[i], a[j]] = [a[j], a[i]]
+    }
+    return a
   }
   computeMinED = (reference, candidate, percent) => {
     var dp = Array.from(Array(reference.length + 1), () => new Array(candidate.length + 1))
@@ -137,7 +159,7 @@ class GameScreen extends React.Component {
     if (utterance !== undefined) {
       const utt_list = utterance.transcript.split(' ')
       const [success, acc, st, en] = this.computeMinED(
-        dict[this.state.current_utt].split(' '),
+        this.state.dict[this.state.current_utt].split(' '),
         utt_list.slice(0, utt_list.length - 1),
         0.8
       )
@@ -154,8 +176,12 @@ class GameScreen extends React.Component {
             time: Math.max(4, 8 - this.state.correct ** 2 * 0.03),
             score: this.state.score + (10000 / this.state.time) * acc,
             refreshed: false,
-            correct: this.state.correct + 1
+            correct: this.state.correct + 1,
+            isCorrect: true
           })
+          setTimeout(() => {
+            this.setState({ isCorrect: false })
+          }, 500)
           this.setState({ refreshed: true })
         }
       }
@@ -166,7 +192,7 @@ class GameScreen extends React.Component {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     const mediaRecorder = new MediaRecorder(stream)
     var client = new w3c('ws://localhost:8080/client/ws/speech')
-
+    this.setState({ mediaRecorder: this.state.mediaRecorder })
     mediaRecorder.addEventListener('dataavailable', async event => {
       client.send(event.data)
     })
@@ -179,9 +205,6 @@ class GameScreen extends React.Component {
   }
   start = async () => {
     await this.recordAudio()
-  }
-  stop = async mediaRecorder => {
-    await mediaRecorder.stop()
   }
   record = async () => {
     await this.recordAudio()
@@ -199,20 +222,25 @@ class GameScreen extends React.Component {
         {this.state.countdown > 0 && !this.state.isFinished ? this.renderCountdownScreen() : null}
         {this.state.isFinished ? <FinishedScreen score={this.state.score} stopGame={this.props.stopGame} /> : null}
         {/* <div class="sliding-background" /> */}
-        <GameDetails
-          current_utt={dict[this.state.current_utt]}
-          speech={this.state.utterance}
-          hitpoint={this.state.hitpoint}
-          score={this.state.score}
-          time={this.state.time}
-          secDiff={this.state.time - this.state.secDiff}
-          isTimerBarRunning={this.state.isTimerBarRunning}
-          refreshed={this.state.refreshed}
-        />
+        <div className="top-screen">
+          <GameDetails
+            current_utt={dict[this.state.current_utt]}
+            speech={this.state.utterance}
+            hitpoint={this.state.hitpoint}
+            score={this.state.score}
+            time={this.state.time}
+            secDiff={this.state.time - this.state.secDiff}
+            isTimerBarRunning={this.state.isTimerBarRunning}
+            refreshed={this.state.refreshed}
+            isCorrect={this.state.isCorrect}
+            isWrong={this.state.isWrong}
+          />
+        </div>
         <div className="entities">
           <Grandma />
           <Enemy />
         </div>
+
         <div className="ground" />
       </div>
     )

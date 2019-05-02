@@ -2,6 +2,7 @@ import React from 'react'
 import './App.css'
 import GameScreen from './GameScreen'
 import HomeScreen from './HomeScreen'
+import CharacterSelectCard from './CharacterSelectCard'
 
 class App extends React.Component {
   state = {
@@ -21,6 +22,7 @@ class App extends React.Component {
         ) : (
           <HomeScreen startGame={this.startGame} />
         )}
+        {/* <CharacterSelectCard /> */}
       </div>
     )
   }

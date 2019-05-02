@@ -5,8 +5,6 @@ class Grandma extends React.Component {
     return (
       <div>
         <img src={MaincharImg} />
-        <br />
-        Grandma
       </div>
     )
   }

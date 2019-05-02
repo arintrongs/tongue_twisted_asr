@@ -6,8 +6,6 @@ class Enemy extends React.Component {
     return (
       <div>
         <img src={Gudako} />
-        <br />
-        Enemy
       </div>
     )
   }

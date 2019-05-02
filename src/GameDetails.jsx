@@ -14,31 +14,42 @@ class GameDetails extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="hit-point">พลังชีวิต : {this.renderHearts()}</div>
-        <div className="sentences-display">
-          {this.props.current_utt}
-          <div className="timer">
-            {this.props.isTimerBarRunning ? (
-              <Tween
-                duration={this.props.time}
-                from={{ width: 700 }}
-                to={{ width: 0 }}
-                repeat={-1}
-                playState={this.props.refreshed ? 'play' : 'stop'}
-              >
-                <div className="timer-bar" />
-              </Tween>
-            ) : (
-              <div className="timer-bar" />
-            )}
+      <React.Fragment>
+        <div className="hp-score-container">
+          <div className="hit-point">พลังชีวิต : {this.renderHearts()}</div>
 
-            <div className="center-bar" />
-          </div>
-          {this.props.speech}
+          <div className="score">คะแนน : {this.props.score.toFixed(2)}</div>
         </div>
-        <div className="score">คะแนน : {this.props.score.toFixed(2)}</div>
-      </div>
+        <div className="sentences-container">
+          <div
+            className={
+              'sentences-display ' +
+              (this.props.isCorrect ? 'correct-stroke ' : '') +
+              (this.props.isWrong ? 'wrong-stroke' : '')
+            }
+          >
+            {this.props.current_utt}
+            <div className="timer">
+              {this.props.isTimerBarRunning ? (
+                <Tween
+                  duration={this.props.time}
+                  from={{ width: 700 }}
+                  to={{ width: 0 }}
+                  repeat={-1}
+                  playState={this.props.refreshed ? 'play' : 'stop'}
+                >
+                  <div className="timer-bar" />
+                </Tween>
+              ) : (
+                <div className="timer-bar" />
+              )}
+
+              <div className="center-bar" />
+            </div>
+            {this.props.speech}
+          </div>
+        </div>
+      </React.Fragment>
     )
   }
 }
