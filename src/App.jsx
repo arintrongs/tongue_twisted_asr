@@ -15,6 +15,7 @@ class App extends React.Component {
   stopGame = () => {
     this.setState({ isStart: false })
   }
+
   selectChar = () => {
     this.setState({ isSelected: true })
   }

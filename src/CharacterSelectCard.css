@@ -38,3 +38,10 @@
   display: flex;
   justify-content: center;
 }
+.selected {
+  margin-bottom: 60px;
+}
+.select-text {
+  margin-top: 50px;
+  font-size: 36px;
+}

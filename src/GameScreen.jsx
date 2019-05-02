@@ -153,9 +153,10 @@ class GameScreen extends React.Component {
     }
   }
   handleUtterance = e => {
+    if (this.state.isFinished) return
     const hypotheses = _.get(JSON.parse(e.data), 'result.hypotheses', [])
 
-    const utterance = _.head(hypotheses.sort((a, b) => (_.get(a, 'likelihood', 0), _.get(b, 'likelihood', 0))))
+    const utterance = _.head(hypotheses.sort((a, b) => (_.get(a, 'likelihood', 0), _.get(b, 'likelihood', 0)))) || []
     if (utterance !== undefined) {
       const utt_list = utterance.transcript.split(' ')
       const [success, acc, st, en] = this.computeMinED(
@@ -171,7 +172,7 @@ class GameScreen extends React.Component {
         if (secDiff <= this.state.time) {
           this.setState({
             current_utt: this.state.current_utt + 1,
-            utterance: '',
+            utterance: [],
             lastTimeStamp: new Date(),
             time: Math.max(4, 8 - this.state.correct ** 2 * 0.03),
             score: this.state.score + (10000 / this.state.time) * acc,
