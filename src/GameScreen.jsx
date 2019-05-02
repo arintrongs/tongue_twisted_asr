@@ -168,21 +168,23 @@ class GameScreen extends React.Component {
   render() {
     return (
       <div className="screen">
-        {this.state.countdown > 0 ? <div className="countdown">{this.state.countdown}</div> : null}
+        {/* {this.state.countdown > 0 ? <div className="countdown">{this.state.countdown}</div> : null} */}
         {/* <div class="sliding-background" /> */}
-        <GameDetails
-          current_utt={dict[this.state.current_utt]}
-          speech={this.state.utterance}
-          hitpoint={this.state.hitpoint}
-          score={this.state.score}
-          time={this.state.time}
-          secDiff={this.state.time - this.state.secDiff}
-          isTimerBarRunning={this.state.isTimerBarRunning}
-          refreshed={this.state.refreshed}
-        />
-        <div className="entities">
-          <Grandma />
-          <Enemy />
+        <div className="top-screen">
+          <GameDetails
+            current_utt={dict[this.state.current_utt]}
+            speech={this.state.utterance}
+            hitpoint={this.state.hitpoint}
+            score={this.state.score}
+            time={this.state.time}
+            secDiff={this.state.time - this.state.secDiff}
+            isTimerBarRunning={this.state.isTimerBarRunning}
+            refreshed={this.state.refreshed}
+          />
+          <div className="entities">
+            <Grandma />
+            <Enemy />
+          </div>
         </div>
         <div className="ground" />
       </div>
