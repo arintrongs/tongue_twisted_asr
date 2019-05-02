@@ -16,7 +16,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        {!this.state.isStart ? (
+        {this.state.isStart ? (
           <GameScreen isStart={this.state.isStart} stopGame={this.stopGame} />
         ) : (
           <HomeScreen startGame={this.startGame} />

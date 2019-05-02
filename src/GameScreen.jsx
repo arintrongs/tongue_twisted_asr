@@ -5,26 +5,32 @@ import GameDetails from './GameDetails'
 import Enemy from './Enemy'
 import websocket from 'websocket'
 import _ from 'lodash'
-import { dict } from './dict'
+import FinishedScreen from './FinishedScreen'
 
+import { dict } from './dict'
+const initialState = {
+  utterance: [],
+  current_utt: 0,
+  hitpoint: 5,
+  score: 0,
+  time: 5,
+  lastTimeStamp: new Date(),
+  countdown: 3,
+  isTimerBarRunning: false,
+  secDiff: 0,
+  refreshed: false,
+  correct: 0,
+  isFinished: false
+}
 var w3c = websocket.w3cwebsocket
 class GameScreen extends React.Component {
-  state = {
-    utterance: [],
-    current_utt: 0,
-    hitpoint: 5,
-    score: 0,
-    time: 5,
-    lastTimeStamp: new Date(),
-    countdown: 3,
-    isTimerBarRunning: false,
-    secDiff: 0,
-    refreshed: false
-  }
+  state = initialState
+
   async componentDidMount() {
     const interval = setInterval(async () => {
       if (this.state.countdown === 1) {
         clearInterval(interval)
+        this.setState({ lastTimeStamp: new Date() })
         await this.start()
       }
       this.setState({ countdown: this.state.countdown - 1, lastTimeStamp: new Date() })
@@ -34,6 +40,13 @@ class GameScreen extends React.Component {
       const timeDiff = Date.now() - this.state.lastTimeStamp.getTime()
       const secDiff = timeDiff / 1000
       if (secDiff > this.state.time) {
+        if (this.state.hitpoint === 1) {
+          const score = this.state.score
+          this.setState(initialState)
+          this.setState({ isFinished: true, score })
+          clearInterval(timerChecker)
+          return
+        }
         this.setState({
           hitpoint: this.state.hitpoint - 1,
           lastTimeStamp: new Date(),
@@ -43,7 +56,7 @@ class GameScreen extends React.Component {
       this.setState({ secDiff })
     }, 50)
   }
-  computeMinED = (reference, candidate) => {
+  computeMinED = (reference, candidate, percent) => {
     var dp = Array.from(Array(reference.length + 1), () => new Array(candidate.length + 1))
 
     for (var i = 0; i <= reference.length; i++) {
@@ -69,7 +82,7 @@ class GameScreen extends React.Component {
     for (var i = 1; i < reference.length; i++) {
       for (var j = 0; j < candidate.length; j++) {
         if (reference[i] === candidate[j]) {
-          dp[i + 1][j + 1] = dp[i][j]
+          dp[i + 1][j + 1] = Math.min(dp[i][j], Math.min(dp[i + 1][j], dp[i][j + 1]) + 1)
         } else {
           dp[i + 1][j + 1] = Math.min(dp[i][j], Math.min(dp[i + 1][j], dp[i][j + 1])) + 1
         }
@@ -77,10 +90,6 @@ class GameScreen extends React.Component {
     }
 
     var mn = 1000
-
-    for (var j = 1; j <= candidate.length; j++) {
-      mn = Math.min(mn, dp[reference.length][j])
-    }
     var st,
       en = 0
 
@@ -90,28 +99,36 @@ class GameScreen extends React.Component {
         en = j
       }
     }
+    // console.log(reference, candidate, reference.length - mn)
+    if ((reference.length - mn) / reference.length >= percent) {
+      var i = reference.length
+      var j = en
 
-    var i = reference.length
-    var j = en
-
-    while (i > 1 && j > 1) {
-      if (reference[i - 1] == candidate[j - 1]) {
-        i--
-        j--
-      } else {
-        if (dp[i][j] - 1 == dp[i - 1][j]) {
-          i--
-        } else if (dp[i][j] - 1 == dp[i - 1][j - 1]) {
+      while (i > 1 && j > 1) {
+        if (reference[i - 1] == candidate[j - 1]) {
           i--
           j--
         } else {
-          j--
+          if (dp[i][j] - 1 == dp[i - 1][j]) {
+            i--
+          } else if (dp[i][j] - 1 == dp[i - 1][j - 1]) {
+            i--
+            j--
+          } else {
+            j--
+          }
         }
       }
-    }
 
-    st = j
-    return [((reference.length - mn) / candidate.length) * 100, st - 1, en - 1]
+      st = j
+
+      return [true, (reference.length - mn) / reference.length, st - 1, en - 1]
+    } else {
+      en = candidate.length
+      st = Math.max(1, en - 5)
+      // console.log(st - 1, en - 1)
+      return [false, (reference.length - mn) / reference.length, st - 1, en - 1]
+    }
   }
   handleUtterance = e => {
     const hypotheses = _.get(JSON.parse(e.data), 'result.hypotheses', [])
@@ -119,13 +136,14 @@ class GameScreen extends React.Component {
     const utterance = _.head(hypotheses.sort((a, b) => (_.get(a, 'likelihood', 0), _.get(b, 'likelihood', 0))))
     if (utterance !== undefined) {
       const utt_list = utterance.transcript.split(' ')
-      const [result_acc, st, en] = this.computeMinED(
+      const [success, acc, st, en] = this.computeMinED(
+        dict[this.state.current_utt].split(' '),
         utt_list.slice(0, utt_list.length - 1),
-        dict[this.state.current_utt].split(' ')
+        0.8
       )
 
       this.setState({ utterance: utt_list.slice(st, en + 1).join(' ') })
-      if (result_acc >= 80) {
+      if (success) {
         const timeDiff = Date.now() - this.state.lastTimeStamp.getTime()
         const secDiff = timeDiff / 1000
         if (secDiff <= this.state.time) {
@@ -133,9 +151,12 @@ class GameScreen extends React.Component {
             current_utt: this.state.current_utt + 1,
             utterance: '',
             lastTimeStamp: new Date(),
-            time: this.state.time - this.state.current_utt / 5,
-            score: this.state.score + (100 * 1) / this.state.time
+            time: Math.max(4, 8 - this.state.correct ** 2 * 0.03),
+            score: this.state.score + (10000 / this.state.time) * acc,
+            refreshed: false,
+            correct: this.state.correct + 1
           })
+          this.setState({ refreshed: true })
         }
       }
     }
@@ -165,10 +186,18 @@ class GameScreen extends React.Component {
   record = async () => {
     await this.recordAudio()
   }
+
+  renderFinishedScreen = () => {
+    this.finishedScreen.current.focus()
+  }
+  renderCountdownScreen = () => {
+    return <div className="countdown">{this.state.countdown}</div>
+  }
   render() {
     return (
       <div className="screen">
-        {this.state.countdown > 0 ? <div className="countdown">{this.state.countdown}</div> : null}
+        {this.state.countdown > 0 && !this.state.isFinished ? this.renderCountdownScreen() : null}
+        {this.state.isFinished ? <FinishedScreen score={this.state.score} stopGame={this.props.stopGame} /> : null}
         {/* <div class="sliding-background" /> */}
         <GameDetails
           current_utt={dict[this.state.current_utt]}

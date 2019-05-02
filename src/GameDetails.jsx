@@ -1,6 +1,8 @@
 import React from 'react'
 import './GameDetails.css'
 import heart from './sprites/heart.png'
+
+import { Tween } from 'react-gsap'
 class GameDetails extends React.Component {
   renderHearts = () => {
     const hearts = []
@@ -9,10 +11,7 @@ class GameDetails extends React.Component {
     }
     return hearts
   }
-  paddingZeroes = val => {
-    if (val < 99999) return ('0000000' + val).slice(-6)
-    return val
-  }
+
   render() {
     return (
       <div className="container">
@@ -20,19 +19,25 @@ class GameDetails extends React.Component {
         <div className="sentences-display">
           {this.props.current_utt}
           <div className="timer">
-            <div
-              // key={Math.random()}
-              className={'timer-bar ' + (this.props.isTimerBarRunning ? 'timer-bar-running' : '')}
-              style={{
-                animationDuration: `${this.props.time}s`,
-                animationIterationCount: 'infinite'
-              }}
-            />
+            {this.props.isTimerBarRunning ? (
+              <Tween
+                duration={this.props.time}
+                from={{ width: 700 }}
+                to={{ width: 0 }}
+                repeat={-1}
+                playState={this.props.refreshed ? 'play' : 'stop'}
+              >
+                <div className="timer-bar" />
+              </Tween>
+            ) : (
+              <div className="timer-bar" />
+            )}
+
             <div className="center-bar" />
           </div>
           {this.props.speech}
         </div>
-        <div className="score">คะแนน : {this.paddingZeroes(this.props.score)}</div>
+        <div className="score">คะแนน : {this.props.score.toFixed(2)}</div>
       </div>
     )
   }

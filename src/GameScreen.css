@@ -42,11 +42,42 @@
   font-size: 270px;
   font-weight: 600;
 }
+.finished-screen {
+  font-family: 'RD_CHULAJARUEK';
+  position: absolute;
+  z-index: 10;
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  font-weight: 600;
+}
+.back-button {
+  animation: blinker;
+  animation: blinker 0.5s;
+  /* animation-timing-function: ease-in-out; */
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
 @keyframes slide {
   0% {
     transform: translate3d(0, 0, 0);
   }
   100% {
     transform: translate3d(-1920px, 0, 0); /* The image width */
+  }
+}
+
+@keyframes blinker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
