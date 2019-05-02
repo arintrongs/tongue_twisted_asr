@@ -15,18 +15,21 @@ class CharacterSelectCard extends Component {
   handleSelect = e => {
     console.log(e)
     localStorage.setItem('Selected', e)
+    this.props.selectChar()
   }
 
   render() {
     return (
-      <div className="card-container">
-        <p> Select Character </p>
-        <div className="char-container">
-          <img src={cap} className="char-pic" onClick={() => this.handleSelect('cap')} />
-          <img src={strange} className="char-pic" onClick={() => this.handleSelect('strange')} />
-          <img src={ironman} className="char-pic" onClick={() => this.handleSelect('ironman')} />
-          <img src={thor} className="char-pic" onClick={() => this.handleSelect('thor')} />
-          <img src={spiderman} className="char-pic" onClick={() => this.handleSelect('spiderman')} />
+      <div className="char-select-container">
+        <div className="card-container">
+          <p className="card-title"> Select Character </p>
+          <div className="char-container">
+            <img src={cap} className="char-pic" onClick={() => this.handleSelect('cap')} />
+            <img src={strange} className="char-pic" onClick={() => this.handleSelect('strange')} />
+            <img src={ironman} className="char-pic" onClick={() => this.handleSelect('ironman')} />
+            <img src={thor} className="char-pic" onClick={() => this.handleSelect('thor')} />
+            <img src={spiderman} className="char-pic" onClick={() => this.handleSelect('spiderman')} />
+          </div>
         </div>
       </div>
     )

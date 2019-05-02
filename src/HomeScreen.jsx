@@ -10,7 +10,14 @@ class HomeScreen extends React.Component {
         <div className="home-container">
           <div className="title"> ทั้งก์ ทวิสต์</div>
           <img className="logo" src={logo} />
-          <div className="start">กดปุ่ม "เอ็นเทอร์" เพื่อเริ่มเกม</div>
+          <div
+            className="start"
+            onClick={() => {
+              this.props.startGame()
+            }}
+          >
+            กดปุ่ม "เอ็นเทอร์" เพื่อเริ่มเกม
+          </div>
         </div>
         <div className="background" />
       </div>
