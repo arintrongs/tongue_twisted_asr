@@ -1,5 +1,5 @@
 .char-pic {
-  size: 20%;
+  size: 10%;
 }
 
 .char-container {
@@ -11,4 +11,5 @@
 .card-container {
   padding: 20px 20px 20px 20px;
   background-color: bisque;
+  width: 2000px;
 }
