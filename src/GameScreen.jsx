@@ -8,6 +8,7 @@ import _ from 'lodash'
 import FinishedScreen from './FinishedScreen'
 
 import { dict } from './dict'
+import { withBackendUrl } from './utils'
 
 const initialState = {
   utterance: [],
@@ -192,7 +193,7 @@ class GameScreen extends React.Component {
   recordAudio = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     const mediaRecorder = new MediaRecorder(stream)
-    var client = new w3c('ws://localhost:8080/client/ws/speech')
+    var client = new w3c(withBackendUrl('/client/ws/speech'))
     this.setState({ mediaRecorder: this.state.mediaRecorder })
     mediaRecorder.addEventListener('dataavailable', async event => {
       client.send(event.data)
